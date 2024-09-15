@@ -12,6 +12,8 @@ class WatchDog extends Model
     protected $fillable = [
         'user_id',
         'coin_id',
+        'set_price',
+        'change',
     ];
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo

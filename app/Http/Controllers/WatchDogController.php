@@ -6,6 +6,7 @@ use App\Helpers\CoinHelper;
 use App\Http\Resources\WatchDogResource;
 use App\Models\WatchDog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class WatchDogController extends Controller
 {
@@ -22,8 +23,13 @@ class WatchDogController extends Controller
      */
     public function create(Request $request)
     {
-        if (!$request->has('coin_id')) {
-            return response()->json(['error' => 'No coin provided'], 400);
+        $validator = Validator::make($request->all(), [
+            'coin_id' => 'required',
+            'change' => 'required|integer|between:0,100',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
         }
 
         $coin = CoinHelper::getCoin($request->coin_id);
@@ -35,6 +41,8 @@ class WatchDogController extends Controller
         $watchDog = WatchDog::query()->firstOrCreate([
             'user_id' => $request->user()->id,
             'coin_id' => $coin->id,
+            'set_price' => $coin->current_price,
+            'change' => $validator->validated()['change'],
         ]);
 
         if (!$watchDog->wasRecentlyCreated) {
@@ -44,6 +52,8 @@ class WatchDogController extends Controller
         return response()->json([
             'message' => 'Watch dog created',
             'coin' => $coin->name,
+            'price' => $coin->current_price,
+            'change' => $request->change . '%',
         ]);
     }
 

@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Helpers\CoinHelper;
 use App\Http\Resources\CoinResource;
 use App\Models\Coin;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Str;
 
 class CoinController extends Controller
 {

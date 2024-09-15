@@ -48,4 +48,10 @@ class CoinGeckoApi
         $response = $this->client->request('GET', 'coins/markets', ['query' => ['precision' => 4,'page' => $page, 'per_page' => $perPage, 'vs_currency' => 'eur']]);
         return collect(json_decode($response->getBody()->getContents(), true));
     }
+
+    public function getPagedCoinListById(array $coinIds,int $page = 1, int $perPage = 100): Collection
+    {
+        $response = $this->client->request('GET', 'coins/markets', ['query' => ['ids' => implode(',', $coinIds), 'precision' => 4,'page' => $page, 'per_page' => $perPage, 'vs_currency' => 'eur']]);
+        return collect(json_decode($response->getBody()->getContents(), true));
+    }
 }
