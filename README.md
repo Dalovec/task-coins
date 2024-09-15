@@ -4,6 +4,8 @@
 
 This is a demo of a cryptocurrency watch-dog service.
 
+> Made by Dávid Kolembus 2024
+
 ## Table of Contents
 
 - [Task Overview](#task-overview)
@@ -63,7 +65,7 @@ docker compose up -d
 docker exec -it cryptowatcher php artisan currency:refresh
 ```
 
-> Note: This will take a while to run
+> Note: This will take a while to run and even tho it is rate limited it can sometimes fail ???? idk
 
 ## Endpoints and Ports
 

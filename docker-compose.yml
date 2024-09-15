@@ -9,6 +9,8 @@ services:
         container_name: cryptowatcher
         volumes:
             - .:/var/www/html
+            - ./docker/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+
         environment:
             - DB_CONNECTION=pgsql
             - DB_HOST=db
