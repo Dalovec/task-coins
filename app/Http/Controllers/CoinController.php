@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CoinHelper;
 use App\Http\Resources\CoinResource;
 use App\Models\Coin;
 use Illuminate\Support\Facades\Response;
@@ -22,16 +23,8 @@ class CoinController extends Controller
      */
     public function show(string$coinId)
     {
-        if (Str::isUuid($coinId)) {
-            return Coin::query()
-                ->find($coinId)
-                ?? Response::json(['error' => 'Not found'], 404);
-        }
-
-        return Coin::query()
-            ->where('coin_id', $coinId)
-            ->first()
-            ?? Response::json(['error' => 'Not found'], 404);
+        return CoinHelper::getCoin($coinId)
+            ?? response()->json(['error' => 'Coin not found'], 404);
     }
 
 }
