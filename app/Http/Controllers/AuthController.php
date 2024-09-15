@@ -22,7 +22,7 @@ class AuthController
         );
 
         if ($validator->fails()) {
-            return Response::json(['error' => $validator->errors()], 401);
+            return Response::json(['error' => $validator->errors()], 422);
         }
 
         $user = User::query()->where('email', $request->email);
