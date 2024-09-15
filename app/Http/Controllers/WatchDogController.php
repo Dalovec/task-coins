@@ -28,7 +28,7 @@ class WatchDogController extends Controller
 
         $coin = CoinHelper::getCoin($request->coin_id);
 
-        if (is_null($coin)) {
+        if (!$coin) {
             return response()->json(['error' => 'Coin not found'], 404);
         }
 
