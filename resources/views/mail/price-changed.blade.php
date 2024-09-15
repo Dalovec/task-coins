@@ -3,11 +3,15 @@
 
 Hi,
 
-Your watch dog caught a price change on {{ $coin->name }}.
+**{{ $coin->name }}** price has changed!
 
-The price was {{ $dog->set_price }} and is now {{ $coin->current_price }} with a difference of {{ $dog->set_price - $coin->current_price }}.
+Previous price: `{{ $dog->set_price }}€`
 
-Your watch dog will still be checking the price for another changes.
+Current price: `{{ $coin->current_price }}€`
+
+Change: `{{ $dog->set_price - $coin->current_price }}€`
+
+We've removed your watch dog because the price has changed by more than {{ $dog->change }}%.
 
 Thanks,<br>
 {{ config('app.name') }}

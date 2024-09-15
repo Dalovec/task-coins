@@ -2,10 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use App\JWTHelper;
+use App\Helpers\JWTHelper;
 use Closure;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Response;
 
 class JWTAuth
 {
@@ -14,18 +15,19 @@ class JWTAuth
      *
      * @param Request $request
      * @param Closure $next
-     * @return Response
+     * @return JsonResponse
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): JsonResponse
     {
         $token = $request->bearerToken();
 
         if (!$token) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return Response::json(['error' => 'Unauthorized'], 401);
         }
 
+        // TODO: Add Response to expired and invalid tokens
         if (!JWTHelper::verifyToken($token)) {
-            return response()->json(['error' => 'Invalid token'], 401);
+            return Response::json(['error' => 'Invalid token'], 401);
         }
 
         $user = JWTHelper::getTokenUser($token);

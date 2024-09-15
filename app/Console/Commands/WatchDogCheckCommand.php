@@ -3,12 +3,13 @@
 namespace App\Console\Commands;
 
 use App\CoinGeckoApi;
+use App\Mail\PriceChanged;
 use App\Models\Coin;
 use App\Models\WatchDog;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
-class WatchDogCheck extends Command
+class WatchDogCheckCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -22,12 +23,12 @@ class WatchDogCheck extends Command
      *
      * @var string
      */
-    protected $description = 'Command description'; // TODO: add description
+    protected $description = 'Update all watched currencies and send notifications if price has changed';
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $dogs = WatchDog::all();
 
@@ -70,7 +71,8 @@ class WatchDogCheck extends Command
             $percentChange = $this->getPercentChange($coin->current_price, $dog->set_price);
 
             if ($percentChange >= $dog->change) {
-                Mail::to($dog->user->email)->send(new \App\Mail\PriceChanged($coin, $dog));
+                Mail::to($dog->user->email)->send(new PriceChanged($coin, $dog));
+
                 $dog->delete();
             }
             $this->output->progressAdvance();
@@ -80,7 +82,7 @@ class WatchDogCheck extends Command
         $this->info('Everything is up to date!');
     }
 
-    private function getPercentChange(int $newPrice, int $oldPrice)
+    protected function getPercentChange(int $newPrice, int $oldPrice): float|int
     {
         return (abs($newPrice - $oldPrice) / $oldPrice) * 100;
     }

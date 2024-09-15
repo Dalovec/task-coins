@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\JWTHelper;
 use App\Http\Requests\UserTokenRequest;
-use App\JWTHelper;
+use App\JWT;
 use App\Models\Token;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,9 +14,8 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController
 {
-    public function issueToken(Request $request)
+    public function show(Request $request)
     {
-        // TODO: Full refactor needed extract logic to helper make it better
         $validator = Validator::make(
             $request->all(),
             UserTokenRequest::rules()
@@ -41,12 +41,12 @@ class AuthController
             }
         }
 
-        $token = JWTHelper::issueToken($user);
+        $jwt = JWTHelper::issueOrFind($user);
 
-        return Response::json(['token' => $token]);
+        return Response::json(['token' => $jwt->getToken(), 'expires_at' => $jwt->getExp()->toDateTimeString()]);
     }
 
-    public function revokeToken(Request $request)
+    public function destroy(Request $request)
     {
         $token = $request->bearerToken();
 
@@ -54,9 +54,7 @@ class AuthController
             return Response::json(['error' => 'Unauthorized'], 401);
         }
 
-        Token::query()
-            ->where('token', $token)
-            ->delete();
+        JWTHelper::deleteToken($token);
 
         return Response::json(['message' => 'Token revoked']);
     }

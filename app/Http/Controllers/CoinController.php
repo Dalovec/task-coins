@@ -6,7 +6,7 @@ use App\Helpers\CoinHelper;
 use App\Http\Resources\CoinResource;
 use App\Models\Coin;
 
-class CoinController extends Controller
+class CoinController
 {
     /**
      * Display a listing of the resource.

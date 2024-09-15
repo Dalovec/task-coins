@@ -2,6 +2,7 @@
 
 namespace App;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use Illuminate\Support\Collection;
 use Spatie\GuzzleRateLimiterMiddleware\RateLimiterMiddleware;
@@ -14,16 +15,16 @@ class CoinGeckoApi
 
     private $apiKey;
     private $baseUrl;
-    private $client;
+    public Client $client;
     public function __construct()
     {
         $this->apiKey = config('coingecko.api_key');
         $this->baseUrl = config('coingecko.base_url');
 
         $stack = HandlerStack::create();
-        $stack->push(RateLimiterMiddleware::perMinute(10, new RateLimiterStore()));
+        $stack->push(RateLimiterMiddleware::perMinute(5, new RateLimiterStore()));
 
-        $this->client = new \GuzzleHttp\Client([
+        $this->client = new Client([
             'base_uri' => $this->baseUrl,
             'handler' => $stack,
             'headers' => ['x-cg-demo-api-key' => $this->apiKey],

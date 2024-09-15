@@ -8,11 +8,12 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class PriceChanged extends Mailable
+class PriceChanged extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -23,9 +24,7 @@ class PriceChanged extends Mailable
         public Coin $coin,
         public WatchDog $dog,
     )
-    {
-
-    }
+    {}
 
     /**
      * Get the message envelope.
@@ -34,7 +33,7 @@ class PriceChanged extends Mailable
     {
         return new Envelope(
             from: new Address('no-reply@watchdog.app', 'Watch Dog'),
-            subject: 'Price Changed on your watch dog',
+            subject: $this->coin->name . ' price changed',
         );
     }
 
@@ -55,7 +54,7 @@ class PriceChanged extends Mailable
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return array<int, Attachment>
      */
     public function attachments(): array
     {

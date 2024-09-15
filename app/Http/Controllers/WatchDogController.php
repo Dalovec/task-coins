@@ -8,7 +8,7 @@ use App\Models\WatchDog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class WatchDogController extends Controller
+class WatchDogController
 {
     /**
      * Display a listing of the resource.

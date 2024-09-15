@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class WatchDog extends Model
 {
@@ -16,12 +17,12 @@ class WatchDog extends Model
         'change',
     ];
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function coin(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function coin(): BelongsTo
     {
         return $this->belongsTo(Coin::class);
     }
