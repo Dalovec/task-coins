@@ -6,8 +6,8 @@ use App\Http\Middleware\JWTAuth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/coins', [CoinController::class, 'index'])->name('coins.index');
-Route::get('/coins/{coin}', [CoinController::class, 'show'])->name('coins.show');
+Route::get('/currencies', [CoinController::class, 'index'])->name('coins.index');
+Route::get('/currencies/{coin}', [CoinController::class, 'show'])->name('coins.show');
 
 Route::middleware([JWTAuth::class])->group(function () {
 

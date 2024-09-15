@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: cryptowatcher
+        volumes:
+            - .:/var/www/html
+        environment:
+            - DB_CONNECTION=pgsql
+            - DB_HOST=db
+            - DB_PORT=5432
+            - DB_DATABASE=laravel
+            - DB_USERNAME=postgres
+            - DB_PASSWORD=secret
+            - QUEUE_CONNECTION=database
+            - MAIL_HOST=mailhog
+            - MAIL_PORT=1025
+        depends_on:
+            - db
+            - mailpit
+        networks:
+            - laravel
+        expose:
+            - "9000"
+        command: sh -c "php artisan migrate --force && php-fpm"
+
+    nginx:
+        image: nginx:alpine
+        container_name: cryptowatcher_nginx
+        volumes:
+            - .:/var/www/html
+            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d
+        ports:
+            - "8000:80"
+        depends_on:
+            - app
+        networks:
+            - laravel
+
+    # PostgreSQL database
+    db:
+        image: postgres:13
+        container_name: cryptowatcher_db
+        environment:
+            POSTGRES_DB: laravel
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: secret
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        networks:
+            - laravel
+
+    mailpit:
+        image: axllent/mailpit
+        container_name: mailpit
+        ports:
+            - "1025:1025" # SMTP
+            - "8025:8025" # Web UI
+        networks:
+            - laravel
+
+    queue:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: cryptowatcher_queue
+        command: php artisan queue:work
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            - db
+            - app
+        networks:
+            - laravel
+
+    scheduler:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: cryptowatcher_scheduler
+        command: >
+            sh -c "while [ true ]; do php artisan schedule:run --verbose --no-interaction; sleep 60; done"
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            - db
+            - app
+        networks:
+            - laravel
+
+networks:
+    laravel:
+
+volumes:
+    pgdata:

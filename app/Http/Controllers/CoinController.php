@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\CoinHelper;
 use App\Http\Resources\CoinResource;
+use App\Http\Resources\DetailedCoinResource;
 use App\Models\Coin;
 
 class CoinController
@@ -21,7 +22,7 @@ class CoinController
      */
     public function show(string$coinId)
     {
-        return CoinHelper::getCoin($coinId)
+        return DetailedCoinResource::make(CoinHelper::getCoin($coinId))
             ?? response()->json(['error' => 'Coin not found'], 404);
     }
 
