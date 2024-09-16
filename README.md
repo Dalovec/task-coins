@@ -52,15 +52,20 @@ git clone https://github.com/Dalovec/task-coins.git
 ```bash
 cp .env.example .env
 ```
-
 > Note: If you have a Coin Gecko API key, you can add it to the .env file
 
-3. **Run docker compose**
+3. **Run composer install**
+```bash
+composer install
+```
+
+
+4. **Run docker compose**
 ```bash
 docker compose up -d
 ```
 
-4. **Seed the database from the Coin Gecko API**
+5. **Seed the database from the Coin Gecko API**
 ```bash
 docker exec -it cryptowatcher php artisan currency:refresh
 ```
